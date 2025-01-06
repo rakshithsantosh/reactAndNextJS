@@ -4,7 +4,7 @@ import Reset from "./Reset";
 import CountButtons from "./CountButtons";
 function Card() {
   return (
-    <div>
+    <div className="card">
       <Title />
       <Count />
       <Reset />
