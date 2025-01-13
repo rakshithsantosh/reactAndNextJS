@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackgroundHeading from "./Components/BackgroundHeading";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
@@ -7,7 +7,9 @@ import Sidebar from "./Components/Sidebar";
 import { initialItems } from "./lib/constants";
 
 function App() {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState(() => {
+    JSON.parse(localStorage.getItem("items")) || initialItems;
+  });
 
   const handleAddItem = (itemText) => {
     const newItem = {
@@ -55,6 +57,10 @@ function App() {
     });
     setItems(newItems);
   };
+
+  useEffect(() => {
+    localStorage.setItem("items", JSON.stringify(items));
+  }, [items]);
 
   const totalNumberOfItems = items.length;
 
