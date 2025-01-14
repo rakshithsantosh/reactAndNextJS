@@ -1,12 +1,9 @@
-import { useEffect, useState } from "react";
-import BackgroundHeading from "./Components/BackgroundHeading";
-import Footer from "./Components/Footer";
-import Header from "./Components/Header";
-import ItemList from "./Components/ItemList";
-import Sidebar from "./Components/Sidebar";
-import { initialItems } from "./lib/constants";
+import { createContext, useState } from "react";
+import { initialItems } from "../lib/constants";
 
-function App() {
+export const ItemsContext = createContext();
+
+export default function ItemsContextProvider({ children }) {
   const [items, setItems] = useState(() => {
     JSON.parse(localStorage.getItem("items")) || initialItems;
   });
@@ -62,34 +59,20 @@ function App() {
     localStorage.setItem("items", JSON.stringify(items));
   }, [items]);
 
-  const totalNumberOfItems = items.length;
-
-  const numberOfItemsPacked = items.filter((item) => item.packed).length;
-
   return (
-    <>
-      <BackgroundHeading />
-      <main>
-        <Header
-          totalNumberOfItems={totalNumberOfItems}
-          numberOfItemsPacked={numberOfItemsPacked}
-        />
-        <ItemList
-          items={items}
-          handleDeleteItem={handleDeleteItem}
-          handleToggleItem={handleToggleItem}
-        />
-        <Sidebar
-          handleAddItem={handleAddItem}
-          handleRemoveAllItems={handleRemoveAllItems}
-          handleResetToInitial={handleResetToInitial}
-          handleMarkAllAsComplete={handleMarkAllAsComplete}
-          handleMarkAllAsInComplete={handleMarkAllAsInComplete}
-        />
-      </main>
-      <Footer />
-    </>
+    <ItemsContext.Provider
+      value={{
+        items,
+        handleAddItem,
+        handleDeleteItem,
+        handleToggleItem,
+        handleRemoveAllItems,
+        handleResetToInitial,
+        handleMarkAllAsComplete,
+        handleMarkAllAsInComplete,
+      }}
+    >
+      {children}
+    </ItemsContext.Provider>
   );
 }
-
-export default App;

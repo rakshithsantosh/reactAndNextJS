@@ -1,27 +1,27 @@
-import EmptyView from "./EmptyView";
 import Select from "react-select";
+import EmptyView from "./EmptyView";
 import { useMemo, useState } from "react";
+import { useItemsStore } from "../stores/itemsStore";
 
 const sortingOptions = [
   {
-    label: "Sort By Default",
+    label: "Sort by default",
     value: "default",
   },
   {
-    label: "Sort By Packed",
+    label: "Sort by packed",
     value: "packed",
   },
   {
-    label: "Sort By Unpacked",
+    label: "Sort by unpacked",
     value: "unpacked",
   },
 ];
 
-export default function ItemList({
-  items,
-  handleDeleteItem,
-  handleToggleItem,
-}) {
+export default function ItemList() {
+  const items = useItemsStore((state) => state.items);
+  const deleteItem = useItemsStore((state) => state.deleteItem);
+  const toggleItem = useItemsStore((state) => state.toggleItem);
   const [sortBy, setSortBy] = useState("default");
 
   const sortedItems = useMemo(
@@ -30,9 +30,11 @@ export default function ItemList({
         if (sortBy === "packed") {
           return b.packed - a.packed;
         }
+
         if (sortBy === "unpacked") {
           return a.packed - b.packed;
         }
+
         return;
       }),
     [items, sortBy]
@@ -51,13 +53,14 @@ export default function ItemList({
           />
         </section>
       ) : null}
+
       {sortedItems.map((item) => {
         return (
           <Item
-            key="item.id"
+            key={item.id}
             item={item}
-            onDeleteItem={handleDeleteItem}
-            onToggleItem={handleToggleItem}
+            onDeleteItem={deleteItem}
+            onToggleItem={toggleItem}
           />
         );
       })}
@@ -73,7 +76,7 @@ function Item({ item, onDeleteItem, onToggleItem }) {
           onChange={() => onToggleItem(item.id)}
           checked={item.packed}
           type="checkbox"
-        />
+        />{" "}
         {item.name}
       </label>
 
