@@ -1,11 +1,11 @@
 type HashtagItemProps = {
-  company: string;
   onSelectCompany: (company: string) => void;
+  company: string;
 };
 
 export default function HashtagItem({
-  company,
   onSelectCompany,
+  company,
 }: HashtagItemProps) {
   return (
     <li key={company}>

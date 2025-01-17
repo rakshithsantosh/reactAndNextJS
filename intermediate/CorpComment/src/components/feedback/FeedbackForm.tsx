@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { MAX_CHARACTERS } from "../../lib/constants";
 
-type FeedbackFormProps = { onAddToList: (text: string) => void };
+type FeedbackFormProps = {
+  onAddToList: (text: string) => void;
+};
 
 export default function FeedbackForm({ onAddToList }: FeedbackFormProps) {
   const [text, setText] = useState("");
-  const charCount = MAX_CHARACTERS - text.length;
   const [showValidIndicator, setShowValidIndicator] = useState(false);
-  const [showInValidIndicator, setShowInValidIndicator] = useState(false);
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newText = e.target.value;
+  const [showInvalidIndicator, setShowInvalidIndicator] = useState(false);
+  const charCount = MAX_CHARACTERS - text.length;
+
+  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newText = event.target.value;
     if (newText.length > MAX_CHARACTERS) {
       return;
     }
@@ -19,19 +22,16 @@ export default function FeedbackForm({ onAddToList }: FeedbackFormProps) {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    //basic validation
+    // basic validation
     if (text.includes("#") && text.length >= 5) {
       setShowValidIndicator(true);
-      setTimeout(() => {
-        setShowValidIndicator(false);
-      }, 2000);
+      setTimeout(() => setShowValidIndicator(false), 2000);
     } else {
-      setShowInValidIndicator(true);
-      setTimeout(() => {
-        setShowInValidIndicator(false);
-      }, 2000);
+      setShowInvalidIndicator(true);
+      setTimeout(() => setShowInvalidIndicator(false), 2000);
       return;
     }
+
     onAddToList(text);
     setText("");
   };
@@ -40,20 +40,21 @@ export default function FeedbackForm({ onAddToList }: FeedbackFormProps) {
     <form
       onSubmit={handleSubmit}
       className={`form ${showValidIndicator ? "form--valid" : ""} ${
-        showInValidIndicator ? "form--invalid" : ""
+        showInvalidIndicator ? "form--invalid" : ""
       }`}
     >
       <textarea
         value={text}
         onChange={handleChange}
         id="feedback-textarea"
-        placeholder="something"
+        placeholder="blabla"
         spellCheck={false}
-        maxLength={MAX_CHARACTERS}
       />
+
       <label htmlFor="feedback-textarea">
-        Enter your Feedback here, remember to #hashtag the company
+        Enter your feedback here, remember to #hashtag the company
       </label>
+
       <div>
         <p className="u-italic">{charCount}</p>
         <button>
